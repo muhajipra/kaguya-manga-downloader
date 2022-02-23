@@ -1,0 +1,1 @@
+# kaguya-manga-downloader
