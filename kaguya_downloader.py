@@ -12,8 +12,8 @@ if os.path.isdir(DOWNLOAD_DESTINATION) is not True: # Check if the directory ava
 	os.mkdir(DOWNLOAD_DESTINATION)
 
 # Initialize the start and end of the chapter to be downloaded
-chapter_start = 7
-chapter_end = 7
+chapter_start = 6
+chapter_end = 9
 
 # Making function to download the manga
 def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNLOAD_URL,
@@ -21,6 +21,9 @@ def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNL
 	'''This function is used to download chapter when given the destination to store the downloaded
 	file, url to download from, the range of chapter to download'''
 	for i in range(chapter_start, chapter_end+1):
+		# Skip download if file already exist
+		if os.path.isdir(download_destination + "/Chapter {}".format(i)):
+			continue
 		# Download the chapter
 		chapter_url = download_url + str(i)
 		request = requests.get(chapter_url)
