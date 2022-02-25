@@ -12,8 +12,12 @@ if os.path.isdir(DOWNLOAD_DESTINATION) is not True: # Check if the directory ava
 	os.mkdir(DOWNLOAD_DESTINATION)
 
 # Initialize the start and end of the chapter to be downloaded
-chapter_start = 6
-chapter_end = 9
+chapter_start = 60
+chapter_end = 60
+
+link_1 = ["60", "70", "80", "91", "101", "109", "111", "121", "131", "141", "151", "161", 
+		"171", "172", "181", "191", "201", "211", "221", "231", "241"]
+link_5 = ["5", "10", "20", "27", "30", "40", "45", "46", "50", "64", "83", "101"]
 
 # Making function to download the manga
 def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNLOAD_URL,
@@ -35,6 +39,26 @@ def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNL
 
 		# Announce that the chapter is successfully downloaded
 		print("Chapter {} has been downloaded".format(i))
+
+		# Download the extra chapter
+		if str(i) in link_1:
+			extra_chapter = download_url + str(i) + "-1"
+			filename = "chapter {}-1.zip".format(i)
+		elif str(i) in link_5:
+			extra_chapter = download_url + str(i) + "-5"
+			filename = "chapter {}-5.zip".format(i)
+		else:
+			continue
+		extra_request = requests.get(extra_chapter)
+		file_path = os.path.join(download_destination, filename)
+		# Store the file to download destination
+		with open(file_path, "wb") as chapter:
+			chapter.write(extra_request.content)
+
+		if str(i) in link_1:
+			print("Chapter {}-1 has been downloaded".format(i))
+		elif str(i) in link_5:
+			print("Chapter {}-5 has been downloaded".format(i))
 
 def zip_extractor(download_destination=DOWNLOAD_DESTINATION):
 	'''This function is used to extract every chapter in the directory and
