@@ -1,6 +1,7 @@
 import os
 import requests
 import zipfile
+from PIL import Image
 
 # Initialize the Base Path to store the downloaded file
 # Note: Will change to Input in later date
@@ -12,8 +13,8 @@ if os.path.isdir(DOWNLOAD_DESTINATION) is not True: # Check if the directory ava
 	os.mkdir(DOWNLOAD_DESTINATION)
 
 # Initialize the start and end of the chapter to be downloaded
-chapter_start = 60
-chapter_end = 60
+chapter_start = 1
+chapter_end = 3
 
 link_1 = ["60", "70", "80", "91", "101", "109", "111", "121", "131", "141", "151", "161", 
 		"171", "172", "181", "191", "201", "211", "221", "231", "241"]
@@ -24,6 +25,9 @@ def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNL
 		chapter_start=chapter_start, chapter_end=chapter_end):
 	'''This function is used to download chapter when given the destination to store the downloaded
 	file, url to download from, the range of chapter to download'''
+	print("Download Starting")
+	print("==================")
+
 	for i in range(chapter_start, chapter_end+1):
 		# Skip download if file already exist
 		if os.path.isdir(download_destination + "/Chapter {}".format(i)):
@@ -77,8 +81,38 @@ def zip_extractor(download_destination=DOWNLOAD_DESTINATION):
 			zip_chapter.extractall(chapter_dir)
 		os.remove(zip_path)
 
+def img_to_pdf(download_destination=DOWNLOAD_DESTINATION):
+	for chapter_list in os.listdir(download_destination):
+		# Check if the pdf file already exist
+		chapter_pdf_path = download_destination + "/{}.pdf".format(chapter_list)
+		if os.path.isfile(chapter_pdf_path):
+			print("{} already exist".format(chapter_list))
+			continue
+
+		# Convert image to PDF
+		chapter_dir = os.path.join(download_destination, chapter_list)
+		if os.path.isdir(chapter_dir):
+			page_list = []
+			for page_num, page_img in enumerate(os.listdir(chapter_dir)):
+				if page_num+1 == 1:
+					page_1 = os.path.join(chapter_dir, page_img)
+					page_1 = Image.open(page_1)
+					page_1 = page_1.convert('RGB')
+					page_list.append(page_1)
+				else:
+					page_path = os.path.join(chapter_dir, page_img)
+					page_path = Image.open(page_path)
+					page_path = page_path.convert('RGB')
+					page_list.append(page_path)
+			chapter_pdf = download_destination + "\\{}.pdf".format(chapter_list)
+			# Saving and appending the pdf file
+			page_1 = page_list.pop(0)
+			page_1.save(chapter_pdf, "PDF", resolution=100.0, save_all=True,
+				append_images=page_list)
+
 download_manga(DOWNLOAD_DESTINATION,DOWNLOAD_URL, chapter_start, chapter_end)
 zip_extractor(DOWNLOAD_DESTINATION)
+img_to_pdf(DOWNLOAD_DESTINATION)
 
 
 
