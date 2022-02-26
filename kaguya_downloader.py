@@ -13,9 +13,10 @@ if os.path.isdir(DOWNLOAD_DESTINATION) is not True: # Check if the directory ava
 	os.mkdir(DOWNLOAD_DESTINATION)
 
 # Initialize the start and end of the chapter to be downloaded
-chapter_start = 1
-chapter_end = 3
+chapter_start = 254
+chapter_end = 254
 
+# Listing the chapters that has extra chapter
 link_1 = ["60", "70", "80", "91", "101", "109", "111", "121", "131", "141", "151", "161", 
 		"171", "172", "181", "191", "201", "211", "221", "231", "241"]
 link_5 = ["5", "10", "20", "27", "30", "40", "45", "46", "50", "64", "83", "101"]
@@ -26,7 +27,7 @@ def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNL
 	'''This function is used to download chapter when given the destination to store the downloaded
 	file, url to download from, the range of chapter to download'''
 	print("Download Starting")
-	print("==================")
+	print("=================")
 
 	for i in range(chapter_start, chapter_end+1):
 		# Skip download if file already exist
@@ -82,6 +83,8 @@ def zip_extractor(download_destination=DOWNLOAD_DESTINATION):
 		os.remove(zip_path)
 
 def img_to_pdf(download_destination=DOWNLOAD_DESTINATION):
+	'''Converting the image contained within each chapter folder into PDF'''
+
 	for chapter_list in os.listdir(download_destination):
 		# Check if the pdf file already exist
 		chapter_pdf_path = download_destination + "/{}.pdf".format(chapter_list)
@@ -109,6 +112,8 @@ def img_to_pdf(download_destination=DOWNLOAD_DESTINATION):
 			page_1 = page_list.pop(0)
 			page_1.save(chapter_pdf, "PDF", resolution=100.0, save_all=True,
 				append_images=page_list)
+
+			print("Converted {} to PDF".format(chapter_list))
 
 download_manga(DOWNLOAD_DESTINATION,DOWNLOAD_URL, chapter_start, chapter_end)
 zip_extractor(DOWNLOAD_DESTINATION)
