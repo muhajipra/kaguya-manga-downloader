@@ -5,3 +5,4 @@ This program is created to help downloading Kaguya-sama: Love is War from a webs
 ## Things to do:
 1. Merge the PDF of each chapter to their respective volumes
 2. Fine tune the main function to enables it to not download if the download_chapter parameter is "n"
+3. Add function to delete the file images if it already made into PDFs
