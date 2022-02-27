@@ -1,3 +1,5 @@
+#/usr/bin/env python3
+
 import os
 import requests
 import zipfile
@@ -13,8 +15,12 @@ if os.path.isdir(DOWNLOAD_DESTINATION) is not True: # Check if the directory ava
 	os.mkdir(DOWNLOAD_DESTINATION)
 
 # Initialize the start and end of the chapter to be downloaded
-chapter_start = 254
-chapter_end = 254
+download_chapter = input("Do you want to download the files? (y/n)")
+if download_chapter == "y":
+	chapter_start = int(input("What chapter to start?"))
+	chapter_end = int(input("What chapter to end?"))
+extract_file = input("Do you want to extract the files? (y/n)")
+convert_to_pdf = input("Do you want to convert to pdf? (y/n)")
 
 # Listing the chapters that has extra chapter
 link_1 = ["60", "70", "80", "91", "101", "109", "111", "121", "131", "141", "151", "161", 
@@ -68,12 +74,14 @@ def download_manga(download_destination=DOWNLOAD_DESTINATION, download_url=DOWNL
 def zip_extractor(download_destination=DOWNLOAD_DESTINATION):
 	'''This function is used to extract every chapter in the directory and
 	delete the zip file after it completes'''
+	print("Extracting files")
 
 	# Extract the file
 	for i, chapter in enumerate(os.listdir(download_destination)):
-		zip_path = os.path.join(download_destination, chapter)
-		if os.path.isdir(zip_path):
+		if not chapter.endswith(".zip"):
 			continue
+		zip_path = os.path.join(download_destination, chapter)
+		
 		name = chapter[:-4]
 		chapter_dir = os.path.join(download_destination, name)
 
@@ -84,7 +92,7 @@ def zip_extractor(download_destination=DOWNLOAD_DESTINATION):
 
 def img_to_pdf(download_destination=DOWNLOAD_DESTINATION):
 	'''Converting the image contained within each chapter folder into PDF'''
-
+	print("Converting images to PDF")
 	for chapter_list in os.listdir(download_destination):
 		# Check if the pdf file already exist
 		chapter_pdf_path = download_destination + "/{}.pdf".format(chapter_list)
@@ -115,9 +123,17 @@ def img_to_pdf(download_destination=DOWNLOAD_DESTINATION):
 
 			print("Converted {} to PDF".format(chapter_list))
 
-download_manga(DOWNLOAD_DESTINATION,DOWNLOAD_URL, chapter_start, chapter_end)
-zip_extractor(DOWNLOAD_DESTINATION)
-img_to_pdf(DOWNLOAD_DESTINATION)
+#download_manga(DOWNLOAD_DESTINATION,DOWNLOAD_URL, chapter_start, chapter_end)
+#zip_extractor(DOWNLOAD_DESTINATION)
+#img_to_pdf(DOWNLOAD_DESTINATION)
 
+def main():
+	download_manga(DOWNLOAD_DESTINATION, DOWNLOAD_URL, chapter_start, chapter_end)
+	if extract_file == "y":
+		zip_extractor(DOWNLOAD_DESTINATION)
+	if convert_to_pdf == "y":
+		img_to_pdf(DOWNLOAD_DESTINATION)
 
-
+if __name__ == "__main__":
+    main()
+ 
